@@ -21,10 +21,16 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^8.0.1",
+    "@prisma/client": "^5.21.1",
     "@solana/pay": "^0.2.5",
     "@solana/web3.js": "^1.95.4",
+    "bignumber.js": "^9.1.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

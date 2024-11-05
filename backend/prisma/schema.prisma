@@ -9,3 +9,18 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Invoice {
+  id          String    @id @default(uuid())
+  amount      Float
+  description String?
+  status      String    @default("PENDING") // PENDING, PAID, EXPIRED
+  reference   String    @unique // Used in Solana Pay memo field
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt()
+  paidAt      DateTime?
+
+  // Payment specific fields
+  payerWallet String?
+  signature   String? // Transaction signature when paid
+}
