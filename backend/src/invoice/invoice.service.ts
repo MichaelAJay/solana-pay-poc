@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InvoiceDbHandlerService } from '../invoice-db-handler/invoice-db-handler.service';
 import { CreateInvoicePayload, InvoiceStatus } from './types';
 import BigNumber from 'bignumber.js';
-import { encodeURL } from '@solana/pay';
+import { encodeURL, TransferRequestURLFields } from '@solana/pay';
 import { PublicKey } from '@solana/web3.js';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class InvoiceService {
   private acceptanceAccountPublicKey: PublicKey;
+  private mintAccountPublicKey: PublicKey; // public key of an SPL Token mint account (e.g. USDC, USDT)
+  // !! NOTE !! - See https://docs.solanapay.com/spec#recipient
 
   constructor(
     private readonly invoiceDbHandler: InvoiceDbHandlerService,
@@ -24,6 +26,17 @@ export class InvoiceService {
       process.exit(1);
     }
     this.acceptanceAccountPublicKey = acceptanceAccountPublicKey;
+
+    const mintAccountPublicKey = this.configService.get<PublicKey>(
+      'mintAccountPublicKey',
+    );
+    if (!mintAccountPublicKey) {
+      console.error(
+        'Mint account public key is not defined - exiting process.',
+      );
+      process.exit(1);
+    }
+    this.mintAccountPublicKey = mintAccountPublicKey;
   }
 
   // CRUD
@@ -48,14 +61,21 @@ export class InvoiceService {
    */
   async createPaymentLink(reference: string) {
     // Ensure provided reference references an invoice
-    const { amount } = await this.getOne(reference);
+    const { amount, denomination } = await this.getOne(reference);
     const amountBN = new BigNumber(amount);
     const recipient = this.acceptanceAccountPublicKey;
-    const url = encodeURL({
+
+    const transferRequestUrlFields: TransferRequestURLFields = {
       recipient,
       amount: amountBN,
       memo: reference,
-    });
+    };
+
+    if (denomination === 'SPL') {
+      transferRequestUrlFields.splToken = this.mintAccountPublicKey;
+    }
+
+    const url = encodeURL(transferRequestUrlFields);
     return url;
   }
 }

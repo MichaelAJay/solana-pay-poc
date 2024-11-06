@@ -13,6 +13,7 @@ datasource db {
 model Invoice {
   id          String    @id @default(uuid())
   amount      Float
+  denomination String // SOL, SPL
   description String?
   status      String    @default("PENDING") // PENDING, PAID, EXPIRED
   reference   String    @unique // Used in Solana Pay memo field

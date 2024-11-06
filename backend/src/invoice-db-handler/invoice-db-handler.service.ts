@@ -10,7 +10,7 @@ export class InvoiceDbHandlerService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(
-    invoice: Pick<ValidInvoice, 'amount' | 'description'>,
+    invoice: Pick<ValidInvoice, 'amount' | 'description' | 'denomination'>,
     retries = 3,
   ): Promise<ValidInvoice> {
     try {

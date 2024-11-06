@@ -19,6 +19,7 @@ function DisplayQR({ url, clearUrl }: { url: string, clearUrl: (url: string) => 
     return (
         <div className="mt-8 p-4 border border-gray-200 rounded-lg">
             <div ref={qrRef}/>
+            <p>{url}</p>
             <button onClick={handleClick}>Clear</button>
         </div>
     )

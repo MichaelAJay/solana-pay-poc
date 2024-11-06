@@ -8,6 +8,7 @@ interface BuyThingProps {
 
 function BuyThing({ onUrlGenerated }: BuyThingProps) {
     const [amount, setAmount] = useState(0);
+    const [denomination, setDenomination] = useState('');
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -24,6 +25,7 @@ function BuyThing({ onUrlGenerated }: BuyThingProps) {
             // Create invoice
             const { data: reference } = await axiosInstance.post('/invoice', {
                 amount,
+                denomination,
                 description
             });
 
@@ -61,6 +63,35 @@ function BuyThing({ onUrlGenerated }: BuyThingProps) {
             step="0.01"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Currency
+          </label>
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="currency"
+                value="SOL"
+                checked={denomination === 'SOL'}
+                onChange={(e) => setDenomination(e.target.value)}
+                className="form-radio"
+              />
+              <span className="ml-2">SOL</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="currency"
+                value="SPL"
+                checked={denomination === 'SPL'}
+                onChange={(e) => setDenomination(e.target.value)}
+                className="form-radio"
+              />
+              <span className="ml-2">SPL</span>
+            </label>
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
