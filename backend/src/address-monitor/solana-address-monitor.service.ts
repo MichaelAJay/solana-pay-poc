@@ -224,6 +224,9 @@ export class SolanaAddressMonitorService implements OnModuleInit {
           this.onLogsHandlerFactory(transactionType),
         );
       }
+      this.connection.onSlotChange((input) => {
+        console.log(input);
+      });
     } catch (err) {
       console.error(
         'SolanaAddressMonitorService error - exiting process.',
